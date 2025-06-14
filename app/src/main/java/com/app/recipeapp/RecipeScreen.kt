@@ -1,5 +1,6 @@
 package com.app.recipeapp
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -24,10 +25,9 @@ import coil.compose.rememberAsyncImagePainter
 
 
 @Composable
-fun RecipeScreen(modifier: Modifier =Modifier){
-
-    val recipeViewModel : MainViewModel = viewModel()
-    val viewState by recipeViewModel.categoriesState
+fun RecipeScreen(modifier: Modifier =Modifier,navigateToDetail: (Category) -> Unit,
+                 viewState: MainViewModel.RecipeState
+                 ){
 
     Box(modifier = Modifier.fillMaxSize()){
         when{
@@ -35,30 +35,32 @@ fun RecipeScreen(modifier: Modifier =Modifier){
                 CircularProgressIndicator(modifier.align(Alignment.Center))
             }
             viewState.error!=null->{
-                Text("Error Occurred")
+                Text("Error Occurred",modifier.align(Alignment.Center))
             }
             else->{
-                CategoryScreen(viewState.list)
+                CategoryScreen(viewState.list,navigateToDetail)
             }
         }
     }
 }
 
 @Composable
-fun CategoryScreen(categories: List<Category>){
+fun CategoryScreen(categories: List<Category>,navigateToDetail: (Category) -> Unit){
     LazyVerticalGrid(GridCells.Fixed(count = 2),
         modifier = Modifier.fillMaxSize()
         ) {
         items(categories) {
-            category-> CategoryItem(category)
+            category-> CategoryItem(category, navigateToDetail)
         }
     }
 }
 
 
 @Composable
-fun CategoryItem(category: Category){
-    Column(modifier = Modifier.padding(8.dp).fillMaxSize(),
+fun CategoryItem(category: Category,navigateToDetail:(Category)->Unit){
+    Column(modifier = Modifier.padding(8.dp).fillMaxSize().clickable {
+        navigateToDetail(category)
+    },
         horizontalAlignment = Alignment.CenterHorizontally
         ) {
         Image(painter = rememberAsyncImagePainter(category.strCategoryThumb),

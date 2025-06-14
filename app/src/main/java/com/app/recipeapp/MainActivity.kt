@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.app.recipeapp.ui.theme.RecipeAppTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -22,13 +24,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
+            val navController = rememberNavController()
             val isDarkTheme = isSystemInDarkTheme()
             val systemUiController = rememberSystemUiController()
 
             SideEffect {
                 systemUiController.setStatusBarColor(
-                    color = Color.Blue,
+                    color = Color.Cyan,
                     darkIcons = !isDarkTheme
                 )
             }
@@ -36,25 +38,11 @@ class MainActivity : ComponentActivity() {
 
             RecipeAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                   RecipeScreen(modifier = Modifier.padding(innerPadding))
+                    RecipeApp(modifier = Modifier.padding(innerPadding), navController = navController)
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RecipeAppTheme {
-        Greeting("Android")
-    }
-}
